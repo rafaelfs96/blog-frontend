@@ -27,7 +27,7 @@ function Chat() {
   }, [isChatOpen])
 
   useEffect(() => {
-    socket.current = io('http://localhost:8080')
+    socket.current = io(process.env.REACT_APP_BACKENDURL || 'https://myreactappbackend123.herokuapp.com')
 
     socket.current.on('chatFromServer', message => {
       setState(prev => ({ ...prev, chatMessages: [...prev.chatMessages, message] }))

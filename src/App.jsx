@@ -25,7 +25,7 @@ const SinglePost = lazy(() => import('./Pages/SinglePost'))
 const EditPost = lazy(() => import('./Pages/EditPost'))
 const Profile = lazy(() => import('./Pages/Profile'))
 
-Axios.defaults.baseURL = process.env.REACT_APP_BACKENDURL || ''
+Axios.defaults.baseURL = process.env.REACT_APP_BACKENDURL || 'https://myreactappbackend123.herokuapp.com'
 
 function App() {
   const [state, dispatch] = useReducer(AppReducer, initialState)
