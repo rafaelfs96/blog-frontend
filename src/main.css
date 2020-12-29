@@ -17,9 +17,13 @@ li {
   max-width: 732px;
 }
 
-.header-search-icon {
+.header-search-icon,
+.header-chat-icon {
   position: relative;
   top: 3px;
+  background: transparent;
+  outline: none !important;
+  border: none !important;
 }
 
 .header-chat-icon {
