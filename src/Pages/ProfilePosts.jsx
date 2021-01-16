@@ -10,7 +10,7 @@ import Loading from '../Components/Loading'
 import PostItem from '../Components/PostItem'
 
 function ProfilePosts() {
-  const [{ isLoading, posts }, setState] = useState({ isLoading: true, posts: [] })
+  const [{ isLoading, posts, profileStatus }, setState] = useState({ isLoading: true, posts: [], profileStatus: 'loading' })
 
   const { username } = useParams()
   const appDispatch = useContext(DispatchContext)
@@ -20,13 +20,25 @@ function ProfilePosts() {
     const AxiosRequest = Axios.CancelToken.source()
 
     Axios.get(`/profile/${username}/posts`, { cancelToken: AxiosRequest.token })
-      .then(res => setState(prev => ({ ...prev, isLoading: false, posts: res.data })))
-      .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' }))
+      .then(res => {
+        if (res.data) {
+          setState(prev => ({ ...prev, isLoading: false, posts: res.data, profileStatus: 'found' }))
+        } else {
+          throw new Error('profile not found')
+        }
+      })
+      .catch(error => {
+        setState(prev => ({ ...prev, profileStatus: 'not found' }))
+        if (error.toString() !== 'Error: profile not found') {
+          appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' })
+        }
+      })
 
     return () => AxiosRequest.cancel()
   }, [username])
 
   if (isLoading) return <Loading />
+  if (profileStatus === 'not found') return
 
   return (
     <ul className='list-group'>

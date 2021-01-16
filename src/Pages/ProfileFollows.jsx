@@ -9,7 +9,7 @@ import { APP_ACTIONS } from '../Reducers/AppReducer/AppActions'
 import Loading from '../Components/Loading'
 
 function ProfileFollows({ type }) {
-  const [{ isLoading, follows }, setState] = useState({ isLoading: true, follows: [] })
+  const [{ isLoading, follows, profileStatus }, setState] = useState({ isLoading: true, follows: [], profileStatus: 'loading' })
 
   const { username } = useParams()
   const appDispatch = useContext(DispatchContext)
@@ -19,13 +19,25 @@ function ProfileFollows({ type }) {
     const AxiosRequest = Axios.CancelToken.source()
 
     Axios.get(`/profile/${username}/${type}`, { cancelToken: AxiosRequest.token })
-      .then(res => setState(prev => ({ ...prev, isLoading: false, follows: res.data })))
-      .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' }))
+      .then(res => {
+        if (res.data) {
+          setState(prev => ({ ...prev, isLoading: false, follows: res.data, profileStatus: 'found' }))
+        } else {
+          throw new Error('profile not found')
+        }
+      })
+      .catch(error => {
+        setState(prev => ({ ...prev, profileStatus: 'not found' }))
+        if (error.toString() !== 'Error: profile not found') {
+          appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' })
+        }
+      })
 
     return () => AxiosRequest.cancel()
   }, [username])
 
   if (isLoading) return <Loading />
+  if (profileStatus === 'not found') return
 
   return (
     <ul className='list-group'>

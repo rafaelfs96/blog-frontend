@@ -8,9 +8,11 @@ import { APP_ACTIONS } from '../Reducers/AppReducer/AppActions'
 import Page from '../Layout/Page'
 import ProfilePosts from './ProfilePosts'
 import ProfileFollows from './ProfileFollows'
+import NotFound from './NotFound'
 
 function Profile() {
   const initialState = {
+    profileStatus: 'loading',
     followActionLoading: false,
     startFollowingRequestCount: 0,
     stopFollowingRequestCount: 0,
@@ -22,7 +24,7 @@ function Profile() {
     }
   }
 
-  const [{ followActionLoading, profileData, startFollowingRequestCount, stopFollowingRequestCount }, setState] = useState(initialState)
+  const [{ followActionLoading, profileData, startFollowingRequestCount, stopFollowingRequestCount, profileStatus }, setState] = useState(initialState)
 
   const { username } = useParams()
 
@@ -35,8 +37,19 @@ function Profile() {
 
     function fetchData() {
       Axios.post(`/profile/${username}`, { token: user.token }, { cancelToken: AxiosRequest.token })
-        .then(res => setState(prev => ({ ...prev, profileData: res.data })))
-        .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' }))
+        .then(res => {
+          if (res.data) {
+            setState(prev => ({ ...prev, profileData: res.data, profileStatus: 'found' }))
+          } else throw new Error('profile not found')
+        })
+        .catch(error => {
+          setState(prev => ({ ...prev, profileStatus: 'not found' }))
+          if (error.toString() !== 'Error: profile not found') {
+            appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' })
+          }
+        })
+
+      setState(prev => ({ ...prev, isLoading: false }))
     }
 
     fetchData()
@@ -105,37 +118,43 @@ function Profile() {
 
   return (
     <Page title={`${profileData.profileUsername}'s Profile`}>
-      <h2>
-        <img className='avatar-small' src={profileData.profileAvatar} alt={profileData.profileUsername} title={profileData.profileUsername} /> {profileData.profileUsername}
-        {loggedIn && !profileData.isFollowing && user.username !== profileData.profileUsername && profileData.profileUsername !== '...' && (
-          <button onClick={startFollowing} disabled={followActionLoading} className='btn btn-primary btn-sm ml-2'>
-            Follow <i className='fas fa-user-plus'></i>
-          </button>
-        )}
-        {loggedIn && profileData.isFollowing && user.username !== profileData.profileUsername && profileData.profileUsername !== '...' && (
-          <button onClick={stopFollowing} disabled={followActionLoading} className='btn btn-danger btn-sm ml-2'>
-            Stop Following <i className='fas fa-user-times'></i>
-          </button>
-        )}
-      </h2>
+      {['loading', 'found'].includes(profileStatus) ? (
+        <>
+          <h2>
+            <img className='avatar-small' src={profileData.profileAvatar} alt={profileData.profileUsername} title={profileData.profileUsername} /> {profileData.profileUsername}
+            {loggedIn && !profileData.isFollowing && user.username !== profileData.profileUsername && profileData.profileUsername !== '...' && (
+              <button onClick={startFollowing} disabled={followActionLoading} className='btn btn-primary btn-sm ml-2'>
+                Follow <i className='fas fa-user-plus'></i>
+              </button>
+            )}
+            {loggedIn && profileData.isFollowing && user.username !== profileData.profileUsername && profileData.profileUsername !== '...' && (
+              <button onClick={stopFollowing} disabled={followActionLoading} className='btn btn-danger btn-sm ml-2'>
+                Stop Following <i className='fas fa-user-times'></i>
+              </button>
+            )}
+          </h2>
 
-      <div className='profile-nav nav nav-tabs pt-2 mb-4'>
-        <NavLink exact to={`/profile/${profileData.profileUsername}`} className='nav-item nav-link'>
-          Posts: {profileData.counts.postCount}
-        </NavLink>
-        <NavLink to={`/profile/${profileData.profileUsername}/followers`} className='nav-item nav-link'>
-          Followers: {profileData.counts.followerCount}
-        </NavLink>
-        <NavLink to={`/profile/${profileData.profileUsername}/following`} className='nav-item nav-link'>
-          Following: {profileData.counts.followingCount}
-        </NavLink>
-      </div>
+          <div className='profile-nav nav nav-tabs pt-2 mb-4'>
+            <NavLink exact to={`/profile/${profileData.profileUsername}`} className='nav-item nav-link'>
+              Posts: {profileData.counts.postCount}
+            </NavLink>
+            <NavLink to={`/profile/${profileData.profileUsername}/followers`} className='nav-item nav-link'>
+              Followers: {profileData.counts.followerCount}
+            </NavLink>
+            <NavLink to={`/profile/${profileData.profileUsername}/following`} className='nav-item nav-link'>
+              Following: {profileData.counts.followingCount}
+            </NavLink>
+          </div>
 
-      <Switch>
-        <Route exact path='/profile/:username' component={ProfilePosts} />
-        <Route path='/profile/:username/followers' component={() => <ProfileFollows type='followers' />} />
-        <Route path='/profile/:username/following' component={() => <ProfileFollows type='following' />} />
-      </Switch>
+          <Switch>
+            <Route exact path='/profile/:username' component={ProfilePosts} />
+            <Route path='/profile/:username/followers' component={() => <ProfileFollows type='followers' />} />
+            <Route path='/profile/:username/following' component={() => <ProfileFollows type='following' />} />
+          </Switch>
+        </>
+      ) : (
+        <NotFound />
+      )}
     </Page>
   )
 }
