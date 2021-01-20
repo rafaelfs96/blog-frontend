@@ -58,7 +58,8 @@ function Home() {
         .catch(error => {
           appDispatch({
             type: APP_ACTIONS.flashMessage,
-            value: 'There was a problem or the request was cancelled'
+            value: 'There was a problem or the request was cancelled',
+            color: 'warning'
           })
         })
 
@@ -80,7 +81,8 @@ function Home() {
           .catch(error => {
             appDispatch({
               type: APP_ACTIONS.flashMessage,
-              value: 'There was a problem or the request was cancelled'
+              value: 'There was a problem or the request was cancelled',
+              color: 'warning'
             })
           })
       }
@@ -109,13 +111,15 @@ function Home() {
 
             appDispatch({
               type: APP_ACTIONS.flashMessage,
-              value: 'Congrats, welcome to your new account!'
+              value: 'Congrats, welcome to your new account!',
+              color: 'success'
             })
           })
           .catch(error => {
             appDispatch({
               type: APP_ACTIONS.flashMessage,
-              value: 'There was a problem or the request was cancelled'
+              value: 'There was a problem or the request was cancelled',
+              color: 'warning'
             })
           })
       }
@@ -141,7 +145,8 @@ function Home() {
           .catch(error => {
             appDispatch({
               type: APP_ACTIONS.flashMessage,
-              value: 'There was an error with this request or the request was cancelled'
+              value: 'There was an error with this request or the request was cancelled',
+              color: 'warning'
             })
           })
       }

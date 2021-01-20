@@ -35,13 +35,13 @@ function EditPost({ history }) {
         if (res.data) {
           editPostDispatch({ type: EDIT_POST_ACTIONS.fetchComplete, value: res.data })
           if (user.username !== res.data.author.username) {
-            appDispatch({ type: APP_ACTIONS.flashMessage, value: 'You do not have permission to edit this post' })
+            appDispatch({ type: APP_ACTIONS.flashMessage, value: 'You do not have permission to edit this post', color: 'danger' })
 
             history.push('/')
           }
         } else editPostDispatch({ type: EDIT_POST_ACTIONS.notFound })
       })
-      .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' }))
+      .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled', color: 'warning' }))
 
     return () => AxiosRequest.cancel()
   }, [])
@@ -61,11 +61,12 @@ function EditPost({ history }) {
             },
             { cancelToken: AxiosRequest.token }
           )
-          appDispatch({ type: APP_ACTIONS.flashMessage, value: 'Post was saved!' })
+          appDispatch({ type: APP_ACTIONS.flashMessage, value: 'Post was saved!', color: 'success' })
         } catch (error) {
           appDispatch({
             type: APP_ACTIONS.flashMessage,
-            value: 'There was an error with this request or the request was cancelled'
+            value: 'There was an error with this request or the request was cancelled',
+            color: 'warning'
           })
         } finally {
           editPostDispatch({ type: EDIT_POST_ACTIONS.saveRequestFinished })

@@ -46,7 +46,7 @@ function Search() {
 
       Axios.post('/search', { searchTerm }, { cancelToken: AxiosRequest.token })
         .then(res => setState(prev => ({ ...prev, results: res.data, show: 'results' })))
-        .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was a problem or the request was cancelled' }))
+        .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was a problem or the request was cancelled', color: 'warning' }))
 
       return () => AxiosRequest.cancel()
     }

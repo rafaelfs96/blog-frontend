@@ -17,22 +17,45 @@ function Header({ staticEmpty }) {
     evt.preventDefault()
 
     if (!username || !password) {
-      appDispatch({ type: APP_ACTIONS.flashMessage, value: 'You must provide an username and a password to login' })
+      appDispatch({
+        type: APP_ACTIONS.flashMessage,
+        value: 'You must provide an username and a password to login',
+        color: 'warning'
+      })
     } else {
       Axios.post('/login', { username, password })
         .then(res => {
           if (res.data) {
             appDispatch({ type: APP_ACTIONS.login, value: res.data })
-            appDispatch({ type: APP_ACTIONS.flashMessage, value: 'You have successfully logged in' })
-          } else appDispatch({ type: APP_ACTIONS.flashMessage, value: 'incorrect username / password' })
+            appDispatch({
+              type: APP_ACTIONS.flashMessage,
+              value: 'You have successfully logged in',
+              color: 'success'
+            })
+          } else
+            appDispatch({
+              type: APP_ACTIONS.flashMessage,
+              value: 'incorrect username / password',
+              color: 'warning'
+            })
         })
-        .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request' }))
+        .catch(error =>
+          appDispatch({
+            type: APP_ACTIONS.flashMessage,
+            value: 'There was an error with this request',
+            color: 'danger'
+          })
+        )
     }
   }
 
   const handleLogout = () => {
     appDispatch({ type: APP_ACTIONS.logout })
-    appDispatch({ type: APP_ACTIONS.flashMessage, value: 'You have successfully logged out' })
+    appDispatch({
+      type: APP_ACTIONS.flashMessage,
+      value: 'You have successfully logged out',
+      color: 'warning'
+    })
   }
 
   const handleSearchIcon = evt => {

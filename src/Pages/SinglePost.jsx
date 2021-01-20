@@ -29,7 +29,13 @@ function SinglePost({ history }) {
 
     Axios.get(`/post/${id}/`, { cancelToken: AxiosRequest.token })
       .then(res => setState(prev => ({ ...prev, post: res.data, isLoading: false })))
-      .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' }))
+      .catch(error =>
+        appDispatch({
+          type: APP_ACTIONS.flashMessage,
+          value: 'There was an error with this request or the request was cancelled',
+          color: 'warning'
+        })
+      )
 
     return () => AxiosRequest.cancel()
   }, [id])
@@ -45,12 +51,18 @@ function SinglePost({ history }) {
       Axios.delete(`/post/${id}`, { data: { token: user.token } })
         .then(res => {
           if (res.data === 'Success') {
-            appDispatch({ type: APP_ACTIONS.flashMessage, value: 'Post was deleted' })
+            appDispatch({ type: APP_ACTIONS.flashMessage, value: 'Post was deleted', color: 'success' })
 
             history.push(`/profile/${user.username}`)
           }
         })
-        .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error deleting this post' }))
+        .catch(error =>
+          appDispatch({
+            type: APP_ACTIONS.flashMessage,
+            value: 'There was an error deleting this post',
+            color: 'warning'
+          })
+        )
     }
   }
 

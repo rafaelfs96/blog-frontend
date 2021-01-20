@@ -18,7 +18,8 @@ const AppReducer = (state, action) => {
     case APP_ACTIONS.flashMessage:
       return {
         ...state,
-        flashMessages: [...state.flashMessages, action.value]
+        flashMessages: [...state.flashMessages, action.value],
+        alertColor: action.color
       }
 
     case APP_ACTIONS.openSearch:
@@ -65,6 +66,7 @@ const AppReducer = (state, action) => {
 const initialState = {
   loggedIn: Boolean(localStorage.getItem('complexappToken')),
   flashMessages: [],
+  alertColor: '',
   user: {
     token: localStorage.getItem('complexappToken'),
     username: localStorage.getItem('complexappUsername'),

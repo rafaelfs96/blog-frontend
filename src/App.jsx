@@ -29,7 +29,7 @@ Axios.defaults.baseURL = process.env.REACT_APP_BACKENDURL || process.env.REACT_A
 
 function App() {
   const [state, dispatch] = useReducer(AppReducer, initialState)
-  const { loggedIn, user, flashMessages, isSearchOpen } = state
+  const { loggedIn, user, flashMessages, alertColor, isSearchOpen } = state
 
   useEffect(() => {
     if (loggedIn) {
@@ -50,7 +50,7 @@ function App() {
       Axios.post('/checkToken', { token: user.token }, { cancelToken: AxiosRequest.token }).then(res => {
         if (!res.data) {
           dispatch({ type: APP_ACTIONS.logout })
-          dispatch({ type: APP_ACTIONS.flashMessage, value: 'Your session has expired. Please log in again' })
+          dispatch({ type: APP_ACTIONS.flashMessage, value: 'Your session has expired. Please log in again', color: 'warning' })
         }
       })
 
@@ -62,7 +62,7 @@ function App() {
     <StateContext.Provider value={state}>
       <DispatchContext.Provider value={dispatch}>
         <BrowserRouter>
-          <FlashMessages messages={flashMessages} />
+          <FlashMessages messages={flashMessages} color={alertColor} />
           <Header />
           <Suspense fallback={<Loading />}>
             <Switch>

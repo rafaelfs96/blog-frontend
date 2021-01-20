@@ -29,7 +29,11 @@ function ProfileFollows({ type }) {
       .catch(error => {
         setState(prev => ({ ...prev, profileStatus: 'not found' }))
         if (error.toString() !== 'Error: profile not found') {
-          appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled' })
+          appDispatch({
+            type: APP_ACTIONS.flashMessage,
+            value: 'There was an error with this request or the request was cancelled',
+            color: 'warning'
+          })
         }
       })
 

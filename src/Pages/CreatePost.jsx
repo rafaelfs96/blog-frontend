@@ -21,11 +21,12 @@ function CreatePost({ history }) {
       .then(res => {
         appDispatch({
           type: APP_ACTIONS.flashMessage,
-          value: 'Congrats, post created!'
+          value: 'Congrats, post created!',
+          color: 'success'
         })
         history.push(`/post/${res.data}`)
       })
-      .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error creating this post!' }))
+      .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error creating this post!', color: 'danger' }))
   }
 
   return (
