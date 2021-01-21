@@ -43,7 +43,7 @@ function CreatePost({ history }) {
           <label htmlFor='post-body' className='text-muted mb-1 d-block'>
             <small>Body Content</small>
           </label>
-          <textarea onChange={evt => setState(prev => ({ ...prev, title: evt.target.value }))} name='body' id='post-body' className='body-content tall-textarea form-control' type='text'></textarea>
+          <textarea onChange={evt => setState(prev => ({ ...prev, body: evt.target.value }))} name='body' id='post-body' className='body-content tall-textarea form-control' type='text'></textarea>
         </div>
 
         <button className='btn btn-primary'>Save New Post</button>
