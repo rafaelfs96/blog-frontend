@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useReducer, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 
@@ -6,47 +6,64 @@ import Axios from 'axios'
 
 import { DispatchContext, StateContext } from '../Contexts/AppContext'
 import { APP_ACTIONS } from '../Reducers/AppReducer/AppActions'
+import { LOGIN_ACTIONS } from '../Reducers/LoginReducer/LoginActions'
+import { loginInitialState, LoginReducer } from '../Reducers/LoginReducer/LoginReducer'
 
 function Header({ staticEmpty }) {
-  const [{ password, username }, setState] = useState({ username: '', password: '' })
-
   const { loggedIn, user, unreadChatCount } = useContext(StateContext)
   const appDispatch = useContext(DispatchContext)
 
-  const handleLogin = evt => {
-    evt.preventDefault()
+  const [loginState, loginDispatch] = useReducer(LoginReducer, loginInitialState)
 
-    if (!username || !password) {
-      appDispatch({
-        type: APP_ACTIONS.flashMessage,
-        value: 'You must provide an username and a password to login',
-        color: 'warning'
-      })
-    } else {
-      Axios.post('/login', { username, password })
-        .then(res => {
-          if (res.data) {
-            appDispatch({ type: APP_ACTIONS.login, value: res.data })
-            appDispatch({
-              type: APP_ACTIONS.flashMessage,
-              value: 'You have successfully logged in',
-              color: 'success'
-            })
-          } else
-            appDispatch({
-              type: APP_ACTIONS.flashMessage,
-              value: 'incorrect username / password',
-              color: 'warning'
-            })
-        })
-        .catch(error =>
-          appDispatch({
-            type: APP_ACTIONS.flashMessage,
-            value: 'There was an error with this request',
-            color: 'danger'
-          })
+  useEffect(() => {
+    if (loginState.submitCount) {
+      const AxiosRequest = Axios.CancelToken.source()
+
+      function login() {
+        Axios.post(
+          '/login',
+          {
+            username: loginState.username.value,
+            password: loginState.password.value
+          },
+          { cancelToken: AxiosRequest.token }
         )
+          .then(res => {
+            if (res.data) {
+              appDispatch({ type: APP_ACTIONS.login, value: res.data })
+              appDispatch({
+                type: APP_ACTIONS.flashMessage,
+                value: 'You have successfully logged in',
+                color: 'success'
+              })
+            } else
+              appDispatch({
+                type: APP_ACTIONS.flashMessage,
+                value: 'incorrect username / password',
+                color: 'warning'
+              })
+          })
+          .catch(error =>
+            appDispatch({
+              type: APP_ACTIONS.flashMessage,
+              value: 'There was an error with this request',
+              color: 'danger'
+            })
+          )
+      }
+
+      login()
+
+      return () => AxiosRequest.cancel()
     }
+  }, [loginState.submitCount])
+
+  const handleSubmit = event => {
+    event.preventDefault()
+
+    loginDispatch({ type: LOGIN_ACTIONS.usernameImmediately, value: loginState.username.value })
+    loginDispatch({ type: LOGIN_ACTIONS.passwordImmediately, value: loginState.password.value })
+    loginDispatch({ type: LOGIN_ACTIONS.submitForm })
   }
 
   const handleLogout = () => {
@@ -96,13 +113,13 @@ function Header({ staticEmpty }) {
             </button>
           </div>
         ) : (
-          <form className='mb-0 pt-2 pt-md-0' onSubmit={handleLogin}>
+          <form className='mb-0 pt-2 pt-md-0' onSubmit={handleSubmit}>
             <div className='row align-items-center'>
               <div className='col-md mr-0 pr-md-0 mb-3 mb-md-0'>
-                <input onChange={evt => setState(prev => ({ ...prev, username: evt.target.value }))} name='username' className='form-control form-control-sm input-dark' type='text' placeholder='Username' autoComplete='off' />
+                <input onChange={evt => loginDispatch({ type: LOGIN_ACTIONS.usernameImmediately, value: evt.target.value })} name='username' className={`${loginState.username.hasErrors ? 'is-invalid' : ''} form-control form-control-sm input-dark`} type='text' placeholder='Username' autoComplete='off' />
               </div>
               <div className='col-md mr-0 pr-md-0 mb-3 mb-md-0'>
-                <input onChange={evt => setState(prev => ({ ...prev, password: evt.target.value }))} name='password' className='form-control form-control-sm input-dark' type='password' placeholder='Password' />
+                <input onChange={evt => loginDispatch({ type: LOGIN_ACTIONS.passwordImmediately, value: evt.target.value })} name='password' className={`${loginState.password.hasErrors ? 'is-invalid' : ''} form-control form-control-sm input-dark`} type='password' placeholder='Password' />
               </div>
               <div className='col-md-auto'>
                 <button className='btn btn-success btn-sm'>Sign In</button>
