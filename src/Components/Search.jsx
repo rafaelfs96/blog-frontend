@@ -24,6 +24,7 @@ function Search() {
 
     document.addEventListener('keyup', searchKeyPressHandler)
     return () => document.removeEventListener('keyup', searchKeyPressHandler)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -50,6 +51,7 @@ function Search() {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestCount])
 
   return (

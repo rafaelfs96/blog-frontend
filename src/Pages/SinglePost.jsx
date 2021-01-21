@@ -38,6 +38,7 @@ function SinglePost({ history }) {
       )
 
     return () => AxiosRequest.cancel()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
 
   const date = new Date(post.createdDate)
@@ -86,9 +87,9 @@ function SinglePost({ history }) {
               <i className='fas fa-edit'></i>
             </Link>
             <ReactTooltip id='edit' className='custom-tooltip' />{' '}
-            <a onClick={deleteHandler} data-tip='Delete' data-for='delete' className='delete-post-button text-danger' title='Delete'>
+            <button onClick={deleteHandler} data-tip='Delete' data-for='delete' className='delete-post-button text-danger' title='Delete'>
               <i className='fas fa-trash'></i>
-            </a>
+            </button>
             <ReactTooltip id='delete' className='custom-tooltip' />
           </span>
         )}

@@ -41,6 +41,7 @@ function App() {
       localStorage.removeItem('complexappUsername')
       localStorage.removeItem('complexappAvatar')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn])
 
   useEffect(() => {
@@ -56,6 +57,7 @@ function App() {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

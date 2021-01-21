@@ -35,6 +35,7 @@ function ProfilePosts() {
       })
 
     return () => AxiosRequest.cancel()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username])
 
   if (isLoading) return <Loading />

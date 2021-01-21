@@ -1,4 +1,4 @@
-import React, { useState, useContext, useReducer, useEffect } from 'react'
+import React, { useContext, useReducer, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ReactTooltip from 'react-tooltip'
 
@@ -56,6 +56,7 @@ function Header({ staticEmpty }) {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loginState.submitCount])
 
   const handleSubmit = event => {

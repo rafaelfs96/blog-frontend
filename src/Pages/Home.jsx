@@ -65,6 +65,7 @@ function Home() {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signupState.username.checkCount])
 
   useEffect(() => {
@@ -91,6 +92,7 @@ function Home() {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signupState.email.checkCount])
 
   useEffect(() => {
@@ -128,6 +130,7 @@ function Home() {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signupState.submitCount])
 
   useEffect(() => {
@@ -155,6 +158,7 @@ function Home() {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [contextLoggedIn])
 
   const handleSubmit = event => {

@@ -24,6 +24,7 @@ function Chat() {
       chatField.current.focus()
       appDispatch({ type: APP_ACTIONS.clearUnreadChatCount })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChatOpen])
 
   useEffect(() => {
@@ -41,6 +42,7 @@ function Chat() {
     if (!isChatOpen && chatMessages.length) {
       appDispatch({ type: APP_ACTIONS.incrementUnreadChatCount })
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatMessages])
 
   const handleSubmit = evt => {

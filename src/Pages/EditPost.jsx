@@ -44,6 +44,7 @@ function EditPost({ history }) {
       .catch(error => appDispatch({ type: APP_ACTIONS.flashMessage, value: 'There was an error with this request or the request was cancelled', color: 'warning' }))
 
     return () => AxiosRequest.cancel()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -77,6 +78,7 @@ function EditPost({ history }) {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postState.sendCount])
 
   if (postState.notFound) return <NotFound />

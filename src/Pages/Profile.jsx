@@ -59,6 +59,7 @@ function Profile() {
     fetchData()
 
     return () => AxiosRequest.cancel()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username])
 
   useEffect(() => {
@@ -95,6 +96,7 @@ function Profile() {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startFollowingRequestCount])
 
   useEffect(() => {
@@ -127,6 +129,7 @@ function Profile() {
 
       return () => AxiosRequest.cancel()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stopFollowingRequestCount])
 
   const startFollowing = () => setState(prev => ({ ...prev, startFollowingRequestCount: prev.startFollowingRequestCount + 1 }))
