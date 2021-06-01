@@ -20,12 +20,12 @@
     "web-vitals": "^1.1.0"
   },
   "scripts": {
-    "start": "yarn generate && react-scripts start",
-    "build": "yarn generate && CI=false react-scripts build",
+    "start": "npm run generate && react-scripts start",
+    "build": "npm run generate && CI=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "generate": "babel-node --presets=@babel/preset-react,@babel/preset-env generateHTML.js",
-    "preview": "yarn build && serve -s build"
+    "preview": "npm run build && serve -s build"
   },
   "eslintConfig": {
     "extends": [
